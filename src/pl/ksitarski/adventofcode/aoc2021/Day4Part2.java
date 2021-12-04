@@ -112,12 +112,6 @@ public class Day4Part2 implements Solution {
                     return true;
                 }
             }
-            if (validateAcross1()) {
-                return true;
-            }
-            if (validateAcross2()) {
-                return true;
-            }
             return false;
         }
 
@@ -134,26 +128,6 @@ public class Day4Part2 implements Solution {
         private boolean validateCol(int rowId) {
             for (int i = 0; i < BINGO_SIZE; i++) {
                 if (!boardMarked[i][rowId]) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private boolean validateAcross1() {
-            for (int i = 0; i < BINGO_SIZE; i++) {
-                if (!boardMarked[i][i]) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private boolean validateAcross2() {
-            for (int i = 0; i < BINGO_SIZE; i++) {
-                if (!boardMarked[i][BINGO_SIZE - i - 1]) {
                     return false;
                 }
             }
