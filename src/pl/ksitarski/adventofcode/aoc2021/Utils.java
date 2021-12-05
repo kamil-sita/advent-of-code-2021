@@ -57,5 +57,10 @@ public class Utils {
         public int hashCode() {
             return Objects.hash(t, u);
         }
+
+        @Override
+        public String toString() {
+            return "<" + t + ", " + u + ">";
+        }
     }
 }
