@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface Solution {
 
-    int solve(List<String> lines);
+    long solve(List<String> lines);
 
 }

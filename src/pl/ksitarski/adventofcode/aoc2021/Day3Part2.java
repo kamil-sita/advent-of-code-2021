@@ -14,7 +14,7 @@ public class Day3Part2 implements Solution {
     }
 
     @Override
-    public int solve(List<String> lines) {
+    public long solve(List<String> lines) {
         String oxygen = findTheSearchedLine(lines, true);
         String co2 = findTheSearchedLine(lines, false);
 

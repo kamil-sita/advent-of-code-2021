@@ -11,7 +11,7 @@ public class Day4Part1 implements Solution {
     }
 
     @Override
-    public int solve(List<String> lines) {
+    public long solve(List<String> lines) {
         String orderUnprocessed = lines.get(0);
 
         List<Bingo> bingos = generateBingos(lines);
