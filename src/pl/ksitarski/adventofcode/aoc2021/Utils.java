@@ -4,9 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class Utils {
 
@@ -93,5 +93,104 @@ public class Utils {
         public int hashCode() {
             return Objects.hash(x, y);
         }
+    }
+
+    public static class Map2d<T> {
+        private final Map<Coords, T> map = new HashMap<>();
+        private int width;
+        private int height;
+
+        public void put(Coords coords, T t) {
+            if (coords.getX() >= width) {
+                width = coords.getX() + 1;
+            }
+            if (coords.getY() >= height) {
+                height = coords.getY() + 1;
+            }
+            map.put(coords, t);
+        }
+
+        public Optional<T> get(Coords coords) {
+            return map.containsKey(coords) ? Optional.of(map.get(coords)) : Optional.empty();
+        }
+
+        public T forceGet(Coords coords) {
+            return map.get(coords);
+        }
+
+        public List<T> getValuesAround(Coords coords) {
+            List<T> values = new ArrayList<>();
+            List<Coords> existingCoords = getPositionsAround(coords);
+            for (Coords existingCoord : existingCoords) {
+                values.add(get(existingCoord).get());
+            }
+            return values;
+        }
+
+        public List<Coords> getPositionsAround(Coords coords) {
+            List<Coords> values = new ArrayList<>();
+            addCoordIfExists(new Coords(coords.getX() - 1, coords.getY()), values);
+            addCoordIfExists(new Coords(coords.getX() + 1, coords.getY()), values);
+            addCoordIfExists(new Coords(coords.getX(), coords.getY() - 1), values);
+            addCoordIfExists(new Coords(coords.getX(), coords.getY() + 1), values);
+            addCoordIfExists(new Coords(coords.getX() - 1, coords.getY() + 1), values);
+            addCoordIfExists(new Coords(coords.getX() + 1, coords.getY() - 1), values);
+            addCoordIfExists(new Coords(coords.getX() - 1, coords.getY() - 1), values);
+            addCoordIfExists(new Coords(coords.getX() + 1, coords.getY() + 1), values);
+            return values;
+        }
+
+        private void addCoordIfExists(Coords coords, List<Coords> values) {
+            if (get(coords).isPresent()) {
+                values.add(coords);
+            }
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public void iterator(Map2dIterator<T> iterator) {
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    Coords coords = new Coords(x, y);
+                    createIterator(iterator, coords);
+                }
+            }
+        }
+
+        private void createIterator(Map2dIterator<T> iterator, Coords coords) {
+            iterator.doSth(
+                    coords,
+                    forceGet(coords),
+                    (t) -> put(coords, t),
+                    (iter) -> {
+                        List<Coords> coordsAround = getPositionsAround(coords);
+                        for (Coords coordAround : coordsAround) {
+                            createIterator(iter, coordAround);
+                        }
+                    }
+            );
+        }
+
+        public void print() {
+            System.out.println("===");
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    Coords coords = new Coords(x, y);
+                    System.out.print(forceGet(coords));
+                }
+                System.out.println();
+            }
+            System.out.println("===");
+        }
+    }
+
+    public interface Map2dIterator<T> {
+        void doSth(Coords coords, T value, Consumer<T> modifyThis, Consumer<Map2dIterator<T>> aroundThis);
     }
 }
