@@ -1,16 +1,19 @@
 package pl.ksitarski.adventofcode.aoc2021;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import static pl.ksitarski.adventofcode.aoc2021.Utils.*;
 
 
-public class Day11Part1 implements Solution {
+public class Day11Part2 implements Solution {
 
     private static final int FLASH_ENERGY_LEVEL = 9;
 
     public static void main(String[] args) {
-        System.out.println(new Day11Part1().solve(readFile("day11.txt")));
+        System.out.println(new Day11Part2().solve(readFile("day11.txt")));
     }
 
     @Override
@@ -29,17 +32,17 @@ public class Day11Part1 implements Solution {
             }
         }
 
-        for (int i = 0; i < 100; i++) {
+        int i = 0;
+        while (!octupusMatrix.iterate()) {
             octupusMatrix.print();
-            octupusMatrix.iterate();
+            i++;
         }
         octupusMatrix.print();
-
-        return octupusMatrix.getFlashCount();
+        return i + 1;
     }
 
     private static class OctupusMatrix {
-        private final Utils.Map2d<Integer> map2d = new Utils.Map2d<>();
+        private final Map2d<Integer> map2d = new Map2d<>();
         private final Set<Coords> flashed = new HashSet<>();
         private int flashCount = 0;
 
@@ -47,11 +50,23 @@ public class Day11Part1 implements Solution {
             map2d.put(coords, val);
         }
 
-        public void iterate() {
+        public boolean iterate() {
             incrementAllByOne();
             flash();
             keepEnergyLevelsAfterFlash();
             flashed.clear();
+            return allFlashed();
+        }
+
+        private boolean allFlashed() {
+            final int[] flashedCount = {0};
+            map2d.iterator((coords, value, modifyThis, aroundThis) -> {
+                if (value == 0) {
+                    flashedCount[0]++;
+                }
+            });
+
+            return flashedCount[0] == map2d.getHeight() * map2d.getWidth();
         }
 
         private void incrementAllByOne() {
