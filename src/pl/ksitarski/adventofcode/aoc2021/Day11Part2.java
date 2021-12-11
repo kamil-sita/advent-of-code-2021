@@ -32,13 +32,13 @@ public class Day11Part2 implements Solution {
             }
         }
 
-        int i = 0;
+        int i = 1;
         while (!octupusMatrix.iterate()) {
             octupusMatrix.print();
             i++;
         }
         octupusMatrix.print();
-        return i + 1;
+        return i;
     }
 
     private static class OctupusMatrix {
