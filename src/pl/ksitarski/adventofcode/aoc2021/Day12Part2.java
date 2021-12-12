@@ -2,13 +2,13 @@ package pl.ksitarski.adventofcode.aoc2021;
 
 import java.util.*;
 
-import static pl.ksitarski.adventofcode.aoc2021.Utils.*;
+import static pl.ksitarski.adventofcode.aoc2021.Utils.readFile;
 
 
-public class Day12Part1 implements Solution {
+public class Day12Part2 implements Solution {
 
     public static void main(String[] args) {
-        System.out.println(new Day12Part1().solve(readFile("day12.txt")));
+        System.out.println(new Day12Part2().solve(readFile("day12.txt")));
     }
 
     @Override
@@ -108,11 +108,18 @@ public class Day12Part1 implements Solution {
         }
 
         public boolean isValid() {
+            int uniqueNodesVisitedCount = 0;
             Set<Node> uniqueNodes = new HashSet<>();
             for (Node node : nodes) {
                 if (!node.canBeVisitedMultipleTimes()) {
                     if (uniqueNodes.contains(node)) {
-                        return false;
+                        if (node.equals(nodeMap.getStartingNode()) || node.equals(nodeMap.getEndingNode())) {
+                            return false;
+                        }
+                        uniqueNodesVisitedCount++;
+                        if (uniqueNodesVisitedCount >= 2) {
+                            return false;
+                        }
                     } else {
                         uniqueNodes.add(node);
                     }
