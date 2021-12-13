@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class Utils {
@@ -100,6 +101,14 @@ public class Utils {
         private int width;
         private int height;
 
+        public Map2d() {
+        }
+
+        public Map2d(int width, int height) {
+            this.width = width;
+            this.height = height;
+        }
+
         public void put(Coords coords, T t) {
             if (coords.getX() >= width) {
                 width = coords.getX() + 1;
@@ -154,6 +163,20 @@ public class Utils {
             return height;
         }
 
+        public void setWidth(int width) {
+            if (this.width > width) {
+                throw new RuntimeException();
+            }
+            this.width = width;
+        }
+
+        public void setHeight(int height) {
+            if (this.height > height) {
+                throw new RuntimeException();
+            }
+            this.height = height;
+        }
+
         public void iterator(Map2dIterator<T> iterator) {
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
@@ -177,16 +200,30 @@ public class Utils {
             );
         }
 
+        public void iteratorOnPresent(Map2dIterator<T> iterator) {
+            map.forEach((coords, v) -> createIterator(iterator, coords));
+        }
+
         public void print() {
+            print(Object::toString, ".");
+        }
+
+        public void print(Function<T, String> fun, String def) {
             System.out.println("===");
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     Coords coords = new Coords(x, y);
-                    System.out.print(forceGet(coords));
+                    Optional<T> optionalT = get(coords);
+                    if (optionalT.isPresent()) {
+                        System.out.print(fun.apply(optionalT.get()));
+                    } else {
+                        System.out.print(def);
+                    }
                 }
                 System.out.println();
             }
             System.out.println("===");
+
         }
     }
 
