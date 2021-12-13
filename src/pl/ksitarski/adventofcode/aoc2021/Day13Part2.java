@@ -64,7 +64,7 @@ public class Day13Part2 implements Solution {
         }
 
         public void print() {
-            map.print(b -> "#", ".");
+            map.print(b -> "#", " ");
         }
     }
 }
