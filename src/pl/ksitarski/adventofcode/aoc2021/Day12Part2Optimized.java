@@ -1,6 +1,8 @@
 package pl.ksitarski.adventofcode.aoc2021;
 
 import java.util.*;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveTask;
 
 import static pl.ksitarski.adventofcode.aoc2021.Utils.readFile;
 
@@ -14,7 +16,7 @@ public class Day12Part2Optimized implements Solution {
     @Override
     public long solve(List<String> lines) {
         try {
-            Thread.sleep(10000);
+            Thread.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -25,56 +27,11 @@ public class Day12Part2Optimized implements Solution {
     private int solveInternal(List<String> lines) {
         NodeMap nodeMap = initMap(lines);
 
-        List<Path> analyzedPaths = new ArrayList<>();
-        List<Path> finishedValidPaths = new ArrayList<>();
-        {
-            Path initialPath = new Path(nodeMap);
-            initialPath.addNode(nodeMap.getStartingNode());
-            analyzedPaths.add(initialPath);
-        }
+        Path initialPath = new Path(nodeMap);
+        initialPath.addNode(nodeMap.getStartingNode());
+        ForkJoinPool forkJoinPool = new ForkJoinPool();
 
-        pathsAnalyze(nodeMap, analyzedPaths, finishedValidPaths);
-
-        return finishedValidPaths.size();
-    }
-
-    private void pathsAnalyze(NodeMap nodeMap, List<Path> analyzedPaths, List<Path> finishedValidPaths) {
-        while (analyzedPaths.size() > 0) {
-            Path path = analyzedPaths.get(0);
-
-            if (endNow(analyzedPaths, finishedValidPaths, path)) continue;
-
-            createNewPaths(nodeMap, analyzedPaths, path);
-        }
-    }
-
-    private void createNewPaths(NodeMap nodeMap, List<Path> analyzedPaths, Path path) {
-        List<Node> visitableNodes = nodeMap.connectedNodes(path.getNewestNode());
-
-        if (visitableNodes.size() == 0) {
-            analyzedPaths.remove(path);
-        } else {
-            for (int i = 1; i < visitableNodes.size(); i++) {
-                Path newPath = path.copy();
-                newPath.addNode(visitableNodes.get(i));
-                analyzedPaths.add(newPath);
-            }
-            path.addNode(visitableNodes.get(0));
-        }
-    }
-
-    private boolean endNow(List<Path> analyzedPaths, List<Path> finishedValidPaths, Path path) {
-        if (!path.isValid()) {
-            analyzedPaths.remove(path);
-            return true;
-        }
-
-        if (path.hasFinished()) {
-            finishedValidPaths.add(path);
-            analyzedPaths.remove(path);
-            return true;
-        }
-        return false;
+        return forkJoinPool.invoke(initialPath);
     }
 
     private NodeMap initMap(List<String> lines) {
@@ -120,56 +77,27 @@ public class Day12Part2Optimized implements Solution {
         }
     }
 
-    private static class Path {
+    private static class Path extends RecursiveTask<Integer> {
         private final List<Node> nodes;
         private final NodeMap nodeMap;
+        private final int uniqueNodesVisitedCount;
 
         public Path(NodeMap nodeMap) {
             this.nodeMap = nodeMap;
             nodes = new ArrayList<>(4);
+            uniqueNodesVisitedCount = 0;
         }
 
-        private Path(NodeMap nodeMap, List<Node> nodes) {
+        private Path(NodeMap nodeMap, List<Node> nodes, Node nextNode, int uniqueNodesVisitedCount) {
             this.nodeMap = nodeMap;
-            this.nodes = new ArrayList<>(nodes.size() + 2);
+            this.nodes = new ArrayList<>(nodes.size() + 1);
+            this.uniqueNodesVisitedCount = uniqueNodesVisitedCount;
             this.nodes.addAll(nodes);
-        }
-
-        public Path copy() {
-            return new Path(nodeMap, nodes);
+            this.nodes.add(nextNode);
         }
 
         public void addNode(Node node) {
             nodes.add(node);
-        }
-
-        public boolean isValid() {
-            int uniqueNodesVisitedCount = 0;
-            Set<Node> uniqueNodes = new HashSet<>();
-            for (Node node : nodes) {
-                if (!node.canBeVisitedMultipleTimes()) {
-                    if (uniqueNodes.contains(node)) {
-                        if (node.equals(nodeMap.getStartingNode()) || node.equals(nodeMap.getEndingNode())) {
-                            return false;
-                        }
-                        uniqueNodesVisitedCount++;
-                        if (uniqueNodesVisitedCount >= 2) {
-                            return false;
-                        }
-                    } else {
-                        uniqueNodes.add(node);
-                    }
-                }
-            }
-            return true;
-        }
-
-        public boolean hasFinished() {
-            return nodeMap.isEndingNode(getNewestNode());
-        }
-
-        public Node getNewestNode() {
-            return nodes.get(nodes.size() - 1);
         }
 
         @Override
@@ -183,6 +111,44 @@ public class Day12Part2Optimized implements Solution {
                 }
             }
             return sb.toString();
+        }
+
+        @Override
+        protected Integer compute() {
+            Node lastNode = nodes.get(nodes.size() - 1);
+            if (nodeMap.endingNode == lastNode) {
+                return 1;
+            }
+
+            List<Node> nextNodes = nodeMap.connectedNodes(lastNode);
+
+            List<Path> tasks = new ArrayList<>();
+            for (Node nextNode : nextNodes) {
+                if (nextNode.equals(nodeMap.getStartingNode())) {
+                    continue;
+                }
+                int localUniqueNodes = uniqueNodesVisitedCount;
+                if (!nextNode.canBeVisitedMultipleTimes()) {
+                    if (nodes.contains(nextNode)) {
+                        localUniqueNodes++;
+                    }
+                }
+                if (localUniqueNodes >= 2) {
+                    continue;
+                }
+
+                Path path = new Path(nodeMap, nodes, nextNode, localUniqueNodes);
+                path.fork();
+                tasks.add(path);
+            }
+
+            int sum = 0;
+
+            for (Path task : tasks) {
+                sum += task.join();
+            }
+
+            return sum;
         }
     }
 
