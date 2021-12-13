@@ -1,5 +1,9 @@
 package pl.ksitarski.adventofcode.aoc2021;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
@@ -15,12 +19,6 @@ public class Day12Part2Optimized implements Solution {
 
     @Override
     public long solve(List<String> lines) {
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         return solveInternal(lines);
     }
 
@@ -31,7 +29,10 @@ public class Day12Part2Optimized implements Solution {
         initialPath.addNode(nodeMap.getStartingNode());
         ForkJoinPool forkJoinPool = new ForkJoinPool();
 
-        return forkJoinPool.invoke(initialPath);
+        Instant now = Instant.now();
+        int i = forkJoinPool.invoke(initialPath);
+        System.out.println(Duration.between(Instant.now(), now).getNano());
+        return i;
     }
 
     private NodeMap initMap(List<String> lines) {
@@ -194,10 +195,6 @@ public class Day12Part2Optimized implements Solution {
             nodesByName.putIfAbsent(name, new Node(name));
             updateIndexes(nodesByName.get(name));
             return nodesByName.get(name);
-        }
-
-        public boolean isEndingNode(Node node) {
-            return node == getEndingNode();
         }
 
         public List<Node> connectedNodes(Node node) {
