@@ -74,6 +74,14 @@ public class Utils {
             this.y = y;
         }
 
+        public Coords withXDiff(int diffX) {
+            return new Coords(x + diffX, y);
+        }
+
+        public Coords withYDiff(int diffY) {
+            return new Coords(x, y + diffY);
+        }
+
         public int getX() {
             return x;
         }
@@ -93,6 +101,14 @@ public class Utils {
         @Override
         public int hashCode() {
             return Objects.hash(x, y);
+        }
+
+        @Override
+        public String toString() {
+            return "Coords{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    '}';
         }
     }
 
