@@ -14,7 +14,7 @@ public class Day11Part1 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         OctupusMatrix octupusMatrix = new OctupusMatrix();
 
         {

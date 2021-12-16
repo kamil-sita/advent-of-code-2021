@@ -13,7 +13,7 @@ public class Day5Part2 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         Board board = new Board();
 
         for (String line : lines) {

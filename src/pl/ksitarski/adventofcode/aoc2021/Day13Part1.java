@@ -3,7 +3,6 @@ package pl.ksitarski.adventofcode.aoc2021;
 import pl.ksitarski.adventofcode.aoc2021.Utils.Map2d;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 import static pl.ksitarski.adventofcode.aoc2021.Utils.readFile;
 
@@ -15,7 +14,7 @@ public class Day13Part1 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         Paper paper = new Paper();
 
         int folds = 0;
@@ -38,8 +37,6 @@ public class Day13Part1 implements Solution {
                 System.out.println(paper.count());
             }
         }
-
-        paper.print();
 
         return paper.count();
     }

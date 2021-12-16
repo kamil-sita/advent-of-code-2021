@@ -10,7 +10,7 @@ public class Day2Part2 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         int horizontalPosition = 0;
         int aim = 0;
         int depth = 0;

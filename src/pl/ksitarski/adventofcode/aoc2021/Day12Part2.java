@@ -12,7 +12,7 @@ public class Day12Part2 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         NodeMap nodeMap = new NodeMap(new Node("start"), new Node("end"));
 
         for (String line : lines) {

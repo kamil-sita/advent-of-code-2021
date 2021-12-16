@@ -14,7 +14,7 @@ public class Day16Part1 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         String hex = lines.get(0);
         String bin = hexToBin(hex);
 

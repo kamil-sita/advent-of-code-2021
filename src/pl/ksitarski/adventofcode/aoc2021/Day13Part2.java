@@ -14,7 +14,7 @@ public class Day13Part2 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         Paper paper = new Paper();
 
         for (String line : lines) {
@@ -29,9 +29,7 @@ public class Day13Part2 implements Solution {
             }
         }
 
-        paper.print();
-
-        return paper.count();
+        return paper.printToString();
     }
 
     private static class Paper {
@@ -65,6 +63,22 @@ public class Day13Part2 implements Solution {
 
         public void print() {
             map.print(b -> "#", " ");
+        }
+
+        public String printToString() {
+            StringBuilder sb = new StringBuilder();
+            map.print(b -> "#", " ", false, new Utils.Output() {
+                @Override
+                public void print(String s) {
+                    sb.append(s);
+                }
+
+                @Override
+                public void println(String s) {
+                    sb.append("\r\n");
+                }
+            });
+            return sb.toString();
         }
     }
 }

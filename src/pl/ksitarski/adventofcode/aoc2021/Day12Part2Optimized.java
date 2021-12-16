@@ -2,8 +2,6 @@ package pl.ksitarski.adventofcode.aoc2021;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
@@ -18,7 +16,7 @@ public class Day12Part2Optimized implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         return solveInternal(lines);
     }
 

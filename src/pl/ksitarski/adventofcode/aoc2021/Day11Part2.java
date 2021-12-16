@@ -3,7 +3,6 @@ package pl.ksitarski.adventofcode.aoc2021;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import static pl.ksitarski.adventofcode.aoc2021.Utils.*;
 
@@ -17,7 +16,7 @@ public class Day11Part2 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         OctupusMatrix octupusMatrix = new OctupusMatrix();
 
         {

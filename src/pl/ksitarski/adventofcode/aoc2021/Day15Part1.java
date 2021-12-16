@@ -12,7 +12,7 @@ public class Day15Part1 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         Utils.Map2d<Integer> map2d = Utils.Map2d.fromStrings(lines);
 
         PriorityQueue<PathPoint> priorityQueue = new PriorityQueue<>();

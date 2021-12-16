@@ -11,7 +11,7 @@ public class Day9Part2 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         Cave cave = new Cave();
 
         {

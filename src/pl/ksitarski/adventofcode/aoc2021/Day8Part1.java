@@ -10,7 +10,7 @@ public class Day8Part1 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         List<FourDigitDisplay> fourDigitDisplays = new ArrayList<>();
 
         for (String line : lines) {

@@ -24,7 +24,7 @@ public class Day10Part2 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         List<String> correctLines = new ArrayList<>();
         for (String line : lines) {
             AnalysisLine analysisLine = new AnalysisLine(line);

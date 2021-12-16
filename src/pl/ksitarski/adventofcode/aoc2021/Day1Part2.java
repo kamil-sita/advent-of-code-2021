@@ -13,7 +13,7 @@ public class Day1Part2 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         List<Integer> integers = lines.stream().map(Integer::parseInt).collect(Collectors.toList());;
 
         Window currentWindow = new Window();

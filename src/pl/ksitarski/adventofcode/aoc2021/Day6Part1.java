@@ -12,7 +12,7 @@ public class Day6Part1 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         Colony colony = new Colony();
 
         String s = lines.get(0);

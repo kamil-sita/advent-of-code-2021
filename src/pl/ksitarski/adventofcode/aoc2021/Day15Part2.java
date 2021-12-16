@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
-import java.util.function.BiConsumer;
 
 import static pl.ksitarski.adventofcode.aoc2021.Utils.readFile;
 
@@ -16,7 +15,7 @@ public class Day15Part2 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         int width = lines.get(0).length();
         int height = lines.size();
 

@@ -12,7 +12,7 @@ public class Day3Part1 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         List<MostCommon> mostCommonList = new ArrayList<>();
 
         for (String line : lines) {

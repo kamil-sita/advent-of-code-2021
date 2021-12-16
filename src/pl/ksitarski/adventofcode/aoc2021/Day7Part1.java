@@ -11,7 +11,7 @@ public class Day7Part1 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         List<Integer> positions = Arrays.stream(lines.get(0).split(","))
                 .map(Integer::parseInt)
                 .sorted()

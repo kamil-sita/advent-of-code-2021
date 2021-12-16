@@ -273,22 +273,53 @@ public class Utils {
         }
 
         public void print(Function<T, String> fun, String def) {
-            System.out.println("===");
+            print(fun, def, true, new Output() {
+                @Override
+                public void print(String s) {
+                    System.out.print(s);
+                }
+
+                @Override
+                public void println(String s) {
+                    System.out.println(s);
+                }
+            });
+        }
+
+        public void print(Function<T, String> fun, String def, boolean separators, Output output) {
+            if (separators) {
+                output.println("===");
+            }
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     Coords coords = new Coords(x, y);
                     Optional<T> optionalT = get(coords);
                     if (optionalT.isPresent()) {
-                        System.out.print(fun.apply(optionalT.get()));
+                        output.print(fun.apply(optionalT.get()));
                     } else {
-                        System.out.print(def);
+                        output.print(def);
                     }
                 }
-                System.out.println();
+                output.println();
             }
-            System.out.println("===");
-
+            if (separators) {
+                output.println("===");
+            }
         }
+    }
+
+    public interface Output {
+        default void print() {
+            print("");
+        }
+
+        void print(String s);
+
+        default void println() {
+            println("");
+        }
+
+        void println(String s);
     }
 
     public interface Map2dIterator<T> {

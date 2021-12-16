@@ -24,7 +24,7 @@ public class Day10Part1 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         long syntaxErrorScore = 0;
 
         for (String line : lines) {

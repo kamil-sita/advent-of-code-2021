@@ -3,7 +3,6 @@ package pl.ksitarski.adventofcode.aoc2021;
 import pl.ksitarski.adventofcode.aoc2021.Utils.Pair;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Day5Part1 implements Solution {
     public static void main(String[] args) {
@@ -11,7 +10,7 @@ public class Day5Part1 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         Board board = new Board();
 
         for (String line : lines) {

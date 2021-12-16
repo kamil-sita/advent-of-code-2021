@@ -12,7 +12,7 @@ public class Day14Part1 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         String polymerStr = lines.get(0);
         Polymer polymer = new Polymer(polymerStr);
 

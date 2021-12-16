@@ -1,10 +1,7 @@
 package pl.ksitarski.adventofcode.aoc2021;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Day3Part2 implements Solution {
@@ -14,7 +11,7 @@ public class Day3Part2 implements Solution {
     }
 
     @Override
-    public long solve(List<String> lines) {
+    public Object solve(List<String> lines) {
         String oxygen = findTheSearchedLine(lines, true);
         String co2 = findTheSearchedLine(lines, false);
 
