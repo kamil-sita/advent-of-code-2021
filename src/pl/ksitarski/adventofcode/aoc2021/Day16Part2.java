@@ -92,20 +92,14 @@ public class Day16Part2 implements Solution {
             if (DEBUG) {
                 System.out.println("reading typeID");
             }
-            char c = str.charAt(ptr);
-            ptr++;
-            if (DEBUG) {
-                System.out.println("typeID: " + c);
-            }
-            return c;
+            return read(1).charAt(0);
         }
 
         public int readLengthInBitsOfSubpackets() {
             if (DEBUG) {
                 System.out.println("reading length of subpackets");
             }
-            String str = read(15);
-            return Integer.parseInt(str, 2);
+            return Integer.parseInt(read(15), 2);
         }
 
         public int getPtr() {
@@ -116,8 +110,7 @@ public class Day16Part2 implements Solution {
             if (DEBUG) {
                 System.out.println("reading number of subpackets");
             }
-            String str = read(11);
-            return Integer.parseInt(str, 2);
+            return Integer.parseInt(read(11), 2);
         }
 
         private String read(int i) {
