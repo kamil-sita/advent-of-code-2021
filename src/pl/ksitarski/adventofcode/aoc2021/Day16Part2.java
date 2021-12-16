@@ -1,16 +1,18 @@
 package pl.ksitarski.adventofcode.aoc2021;
 
-import java.util.*;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 import static pl.ksitarski.adventofcode.aoc2021.Utils.readFile;
 
 
-public class Day16Part1 implements Solution {
+public class Day16Part2 implements Solution {
 
     private static final boolean DEBUG = false;
 
     public static void main(String[] args) {
-        System.out.println(new Day16Part1().solve(readFile("day16.txt")));
+        System.out.println(new Day16Part2().solve(readFile("day16.txt")));
     }
 
     @Override
@@ -25,27 +27,15 @@ public class Day16Part1 implements Solution {
 
         PacketAnalyzer packetAnalyzer = new PacketAnalyzer(bin);
 
-        Context context = new Context();
-
-        boolean readMore = true;
-
-        while (readMore) {
-            readMore = parsePacket(packetAnalyzer, context);
-        }
-
-        return context.sumOfHeaders;
+        return parsePacket(packetAnalyzer).longValueExact();
     }
 
-    private boolean parsePacket(PacketAnalyzer packetAnalyzer, Context context) {
+    private BigInteger parsePacket(PacketAnalyzer packetAnalyzer) {
         Header header = packetAnalyzer.readHeader();
-        if (header == null) {
-            return false;
-        }
         if (DEBUG) {
             System.out.println("header version: " + header.getVersion());
             System.out.println("header type: " + header.getType());
         }
-        context.sumOfHeaders += header.getVersion();
         if (header.isLiteralValue()) {
             StringBuilder sb = new StringBuilder();
             boolean hasMoreData = true;
@@ -54,27 +44,26 @@ public class Day16Part1 implements Solution {
                 hasMoreData = partialValue.hasNext();
                 sb.append(partialValue.getStrValue());
             }
+            return new BigInteger(sb.toString(), 2);
         }
         if (header.isOperator()) {
             char typeId = packetAnalyzer.readLengthTypeId();
+            List<BigInteger> values = new ArrayList<>();
             if (typeId == '0') {
                 int length = packetAnalyzer.readLengthInBitsOfSubpackets();
                 int startedAt = packetAnalyzer.getPtr();
                 while (startedAt + length > packetAnalyzer.getPtr()) {
-                    parsePacket(packetAnalyzer, context);
+                    values.add(parsePacket(packetAnalyzer));
                 }
             } else {
                 int number = packetAnalyzer.readNumberOfSubpackets();
                 for (int i = 0; i < number; i++) {
-                    parsePacket(packetAnalyzer, context);
+                    values.add(parsePacket(packetAnalyzer));
                 }
             }
+            return header.op(values);
         }
-        return true;
-    }
-
-    private static class Context {
-        int sumOfHeaders = 0;
+        throw new RuntimeException();
     }
 
     private static class PacketAnalyzer {
@@ -89,11 +78,7 @@ public class Day16Part1 implements Solution {
             if (DEBUG) {
                 System.out.println("reading header");
             }
-            String str = read(6);
-            if (str == null) {
-                return null;
-            }
-            return new Header(str);
+            return new Header(read(6));
         }
 
         public PartialValue readV() {
@@ -137,7 +122,7 @@ public class Day16Part1 implements Solution {
 
         private String read(int i) {
             if (str.length() < ptr + i) {
-                return null;
+                throw new AnalysisComplete();
             }
             String read = str.substring(ptr, ptr + i);
             ptr += i;
@@ -169,6 +154,65 @@ public class Day16Part1 implements Solution {
         
         public boolean isOperator() {
             return !isLiteralValue();
+        }
+
+        public BigInteger op(List<BigInteger> values) {
+            if (!isOperator()) {
+                throw new RuntimeException();
+            }
+            int type = getType();
+            switch (type) {
+                case 0 -> {
+                    if (values.size() == 1) {
+                        return values.get(0);
+                    }
+                    BigInteger sum = BigInteger.ZERO;
+                    for (BigInteger val : values) {
+                        sum = sum.add(val);
+                    }
+                    return sum;
+                }
+                case 1 -> {
+                    if (values.size() == 1) {
+                        return values.get(0);
+                    }
+                    BigInteger prod = BigInteger.ONE;
+                    for (BigInteger val : values) {
+                        prod = prod.multiply(val);
+                    }
+                    return prod;
+                }
+                case 2 -> {
+                    if (values.size() == 1) {
+                        return values.get(0);
+                    }
+                    BigInteger min = values.get(0);
+                    for (BigInteger val : values) {
+                        min = val.min(min);
+                    }
+                    return min;
+                }
+                case 3 -> {
+                    if (values.size() == 1) {
+                        return values.get(0);
+                    }
+                    BigInteger max = values.get(0);
+                    for (BigInteger val : values) {
+                        max = val.max(max);
+                    }
+                    return max;
+                }
+                case 5 -> {
+                    return (values.get(0).compareTo(values.get(1))) > 0 ? BigInteger.ONE : BigInteger.ZERO;
+                }
+                case 6 -> {
+                    return (values.get(0).compareTo(values.get(1))) < 0 ? BigInteger.ONE : BigInteger.ZERO;
+                }
+                case 7 -> {
+                    return (values.get(0).compareTo(values.get(1))) == 0 ? BigInteger.ONE : BigInteger.ZERO;
+                }
+            }
+            throw new RuntimeException();
         }
     }
 
@@ -230,5 +274,9 @@ public class Day16Part1 implements Solution {
         hex = hex.replaceAll("E", "1110");
         hex = hex.replaceAll("F", "1111");
         return hex;
+    }
+
+    private static class AnalysisComplete extends RuntimeException { //top 10 fast haxs
+
     }
 }
