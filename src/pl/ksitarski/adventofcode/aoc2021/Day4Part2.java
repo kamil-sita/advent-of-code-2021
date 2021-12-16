@@ -1,5 +1,8 @@
 package pl.ksitarski.adventofcode.aoc2021;
 
+import pl.ksitarski.adventofcode.aoc2021.utils.Pair;
+import pl.ksitarski.adventofcode.aoc2021.utils.Utils;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,12 +21,12 @@ public class Day4Part2 implements Solution {
 
         String[] vals = orderUnprocessed.split(",");
 
-        Utils.Pair<Bingo, Integer> winningBoardAndLastVal = findWinningBoardAndLastVal(bingos, vals);
+        Pair<Bingo, Integer> winningBoardAndLastVal = findWinningBoardAndLastVal(bingos, vals);
 
         return winningBoardAndLastVal.getT().sumOfUnmarkedVals() * winningBoardAndLastVal.getU();
     }
 
-    private Utils.Pair<Bingo, Integer> findWinningBoardAndLastVal(List<Bingo> bingos, String[] vals) {
+    private Pair<Bingo, Integer> findWinningBoardAndLastVal(List<Bingo> bingos, String[] vals) {
         Bingo lastBoard = null;
         for (String valAsString : vals) {
             int val = Integer.parseInt(valAsString);
@@ -36,7 +39,7 @@ public class Day4Part2 implements Solution {
                 lastBoard = bingos.get(0);
             }
             if (bingos.size() == 0) {
-                return new Utils.Pair<>(lastBoard, val);
+                return new Pair<>(lastBoard, val);
             }
         }
 
@@ -81,14 +84,14 @@ public class Day4Part2 implements Solution {
     }
 
     public static class Bingo {
-        private final Map<Integer, Utils.Pair<Integer, Integer>> positionsOfValues = new HashMap<>();
+        private final Map<Integer, Pair<Integer, Integer>> positionsOfValues = new HashMap<>();
         private final boolean[][] boardMarked = new boolean[BINGO_SIZE][BINGO_SIZE];
         private final int[][] board;
 
         public Bingo(int[][] board) {
             for (int y = 0; y < BINGO_SIZE; y++) {
                 for (int x = 0; x < BINGO_SIZE; x++) {
-                    positionsOfValues.put(board[y][x], new Utils.Pair<>(x, y));
+                    positionsOfValues.put(board[y][x], new Pair<>(x, y));
                 }
             }
             this.board = board;
@@ -99,7 +102,7 @@ public class Day4Part2 implements Solution {
                 return false;
             }
 
-            Utils.Pair<Integer, Integer> pos = positionsOfValues.get(val);
+            Pair<Integer, Integer> pos = positionsOfValues.get(val);
             boardMarked[pos.getU()][pos.getT()] = true;
 
             for (int row = 0; row < BINGO_SIZE; row++) {

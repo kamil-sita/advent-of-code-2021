@@ -1,10 +1,13 @@
 package pl.ksitarski.adventofcode.aoc2021;
 
+import pl.ksitarski.adventofcode.aoc2021.utils.Coords;
+import pl.ksitarski.adventofcode.aoc2021.utils.Map2d;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static pl.ksitarski.adventofcode.aoc2021.Utils.*;
+import static pl.ksitarski.adventofcode.aoc2021.utils.Utils.*;
 
 
 public class Day11Part2 implements Solution {

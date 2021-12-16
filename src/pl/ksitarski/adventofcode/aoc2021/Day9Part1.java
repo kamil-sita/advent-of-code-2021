@@ -1,5 +1,8 @@
 package pl.ksitarski.adventofcode.aoc2021;
 
+import pl.ksitarski.adventofcode.aoc2021.utils.Coords;
+import pl.ksitarski.adventofcode.aoc2021.utils.Utils;
+
 import java.util.*;
 
 
@@ -49,7 +52,7 @@ public class Day9Part1 implements Solution {
     }
 
     private static class Cave {
-        private final Map<Utils.Coords, Integer> map = new HashMap<>(); //probably would be more optimal as 2D array of 2D list
+        private final Map<Coords, Integer> map = new HashMap<>(); //probably would be more optimal as 2D array of 2D list
         private int width = 0;
         private int height = 0;
 
@@ -60,7 +63,7 @@ public class Day9Part1 implements Solution {
             if (y >= height) {
                 height = y + 1;
             }
-            map.put(new Utils.Coords(x, y), v);
+            map.put(new Coords(x, y), v);
         }
 
         public int getWidth() {
@@ -72,8 +75,8 @@ public class Day9Part1 implements Solution {
         }
 
         public Optional<Integer> getValueFrom(int x, int y) {
-            if (map.containsKey(new Utils.Coords(x, y))) {
-                return Optional.of(map.get(new Utils.Coords(x, y)));
+            if (map.containsKey(new Coords(x, y))) {
+                return Optional.of(map.get(new Coords(x, y)));
             } else {
                 return Optional.empty();
             }

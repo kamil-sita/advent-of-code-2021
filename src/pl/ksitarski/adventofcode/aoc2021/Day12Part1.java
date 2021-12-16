@@ -2,7 +2,7 @@ package pl.ksitarski.adventofcode.aoc2021;
 
 import java.util.*;
 
-import static pl.ksitarski.adventofcode.aoc2021.Utils.*;
+import static pl.ksitarski.adventofcode.aoc2021.utils.Utils.*;
 
 
 public class Day12Part1 implements Solution {

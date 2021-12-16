@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.ksitarski.adventofcode.aoc2021.Utils.readFile;
+import static pl.ksitarski.adventofcode.aoc2021.utils.Utils.readFile;
 
 
 public class Day16Part2 implements Solution {
@@ -226,7 +226,7 @@ public class Day16Part2 implements Solution {
         public int getValue() {
             return Integer.parseInt(string.substring(1, 5), 2);
         }
-        
+
         public String getStrValue() {
             return string.substring(1, 5);
         }

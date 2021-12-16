@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
-import static pl.ksitarski.adventofcode.aoc2021.Utils.readFile;
+import static pl.ksitarski.adventofcode.aoc2021.utils.Utils.readFile;
 
 
 public class Day12Part2Optimized implements Solution {

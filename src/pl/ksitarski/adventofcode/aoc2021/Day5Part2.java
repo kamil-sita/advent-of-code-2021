@@ -1,6 +1,7 @@
 package pl.ksitarski.adventofcode.aoc2021;
 
-import pl.ksitarski.adventofcode.aoc2021.Utils.Pair;
+import pl.ksitarski.adventofcode.aoc2021.utils.Utils;
+import pl.ksitarski.adventofcode.aoc2021.utils.Pair;
 
 import java.util.HashMap;
 import java.util.List;

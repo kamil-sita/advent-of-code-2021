@@ -1,5 +1,8 @@
 package pl.ksitarski.adventofcode.aoc2021;
 
+import pl.ksitarski.adventofcode.aoc2021.utils.Coords;
+import pl.ksitarski.adventofcode.aoc2021.utils.Utils;
+
 import java.util.*;
 
 
@@ -34,11 +37,11 @@ public class Day9Part2 implements Solution {
                             continue;
                         } else {
                             Basin basin = new Basin();
-                            Set<Utils.Coords> visited = new HashSet<>();
-                            Set<Utils.Coords> toVisit = new HashSet<>(); //slower access time but don't have to keep track of things to visit
-                            toVisit.add(new Utils.Coords(x, y));
+                            Set<Coords> visited = new HashSet<>();
+                            Set<Coords> toVisit = new HashSet<>(); //slower access time but don't have to keep track of things to visit
+                            toVisit.add(new Coords(x, y));
                             while (toVisit.size() > 0) {
-                                Utils.Coords coords = toVisit.stream().findAny().get();
+                                Coords coords = toVisit.stream().findAny().get();
                                 if (visited.contains(coords)) {
                                     toVisit.remove(coords);
                                     continue;
@@ -48,7 +51,7 @@ public class Day9Part2 implements Solution {
                                     toVisit.remove(coords);
                                     continue;
                                 }
-                                List<Utils.Coords> coordsAround = cave.getCoordsAround(coords.getX(), coords.getY());
+                                List<Coords> coordsAround = cave.getCoordsAround(coords.getX(), coords.getY());
                                 toVisit.addAll(coordsAround);
                                 basin.add(coords.getX(), coords.getY());
                                 visited.add(coords);
@@ -69,7 +72,7 @@ public class Day9Part2 implements Solution {
     }
 
     private static class Cave {
-        private final Map<Utils.Coords, Integer> map = new HashMap<>(); //probably would be more optimal as 2D array of 2D list
+        private final Map<Coords, Integer> map = new HashMap<>(); //probably would be more optimal as 2D array of 2D list
         private final List<Basin> basins = new ArrayList<>();
         private int width = 0;
         private int height = 0;
@@ -81,7 +84,7 @@ public class Day9Part2 implements Solution {
             if (y >= height) {
                 height = y + 1;
             }
-            map.put(new Utils.Coords(x, y), v);
+            map.put(new Coords(x, y), v);
         }
 
         public boolean isPartOfBasin(int x, int y) {
@@ -110,8 +113,8 @@ public class Day9Part2 implements Solution {
         }
 
         public Optional<Integer> getValueFrom(int x, int y) {
-            if (map.containsKey(new Utils.Coords(x, y))) {
-                return Optional.of(map.get(new Utils.Coords(x, y)));
+            if (map.containsKey(new Coords(x, y))) {
+                return Optional.of(map.get(new Coords(x, y)));
             } else {
                 return Optional.empty();
             }
@@ -126,8 +129,8 @@ public class Day9Part2 implements Solution {
             return values;
         }
 
-        public List<Utils.Coords> getCoordsAround(int x, int y) {
-            List<Utils.Coords> values = new ArrayList<>();
+        public List<Coords> getCoordsAround(int x, int y) {
+            List<Coords> values = new ArrayList<>();
             addCoordIfExists(x - 1, y, values);
             addCoordIfExists(x + 1, y, values);
             addCoordIfExists(x, y - 1, values);
@@ -141,9 +144,9 @@ public class Day9Part2 implements Solution {
             }
         }
 
-        private void addCoordIfExists(int x, int y, List<Utils.Coords> values) {
+        private void addCoordIfExists(int x, int y, List<Coords> values) {
             if (getValueFrom(x, y).isPresent()) {
-                values.add(new Utils.Coords(x, y));
+                values.add(new Coords(x, y));
             }
         }
 
@@ -153,14 +156,14 @@ public class Day9Part2 implements Solution {
     }
 
     private static class Basin {
-        private final Set<Utils.Coords> basin = new HashSet<>();
+        private final Set<Coords> basin = new HashSet<>();
 
         public boolean contains(int x, int y) {
-            return basin.contains(new Utils.Coords(x, y));
+            return basin.contains(new Coords(x, y));
         }
 
         public void add(int x, int y) {
-            basin.add(new Utils.Coords(x, y));
+            basin.add(new Coords(x, y));
         }
 
         public int size() {

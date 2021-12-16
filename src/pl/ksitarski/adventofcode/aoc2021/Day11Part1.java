@@ -1,8 +1,11 @@
 package pl.ksitarski.adventofcode.aoc2021;
 
+import pl.ksitarski.adventofcode.aoc2021.utils.Coords;
+import pl.ksitarski.adventofcode.aoc2021.utils.Map2d;
+
 import java.util.*;
 
-import static pl.ksitarski.adventofcode.aoc2021.Utils.*;
+import static pl.ksitarski.adventofcode.aoc2021.utils.Utils.*;
 
 
 public class Day11Part1 implements Solution {
@@ -39,7 +42,7 @@ public class Day11Part1 implements Solution {
     }
 
     private static class OctupusMatrix {
-        private final Utils.Map2d<Integer> map2d = new Utils.Map2d<>();
+        private final Map2d<Integer> map2d = new Map2d<>();
         private final Set<Coords> flashed = new HashSet<>();
         private int flashCount = 0;
 

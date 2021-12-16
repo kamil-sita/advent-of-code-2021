@@ -1,10 +1,12 @@
 package pl.ksitarski.adventofcode.aoc2021;
 
-import pl.ksitarski.adventofcode.aoc2021.Utils.Map2d;
+import pl.ksitarski.adventofcode.aoc2021.utils.Coords;
+import pl.ksitarski.adventofcode.aoc2021.utils.Map2d;
+import pl.ksitarski.adventofcode.aoc2021.utils.Output;
 
 import java.util.List;
 
-import static pl.ksitarski.adventofcode.aoc2021.Utils.readFile;
+import static pl.ksitarski.adventofcode.aoc2021.utils.Utils.readFile;
 
 
 public class Day13Part2 implements Solution {
@@ -36,7 +38,7 @@ public class Day13Part2 implements Solution {
         private Map2d<Boolean> map = new Map2d<>();
 
         public void putDot(int x, int y) {
-            map.put(new Utils.Coords(x, y), true);
+            map.put(new Coords(x, y), true);
         }
 
         public void fold(boolean horizontal, int v) {
@@ -50,7 +52,7 @@ public class Day13Part2 implements Solution {
                 if (!horizontal && x > v) {
                     x = 2 * v - x;
                 }
-                newMap.put(new Utils.Coords(x, y), true);
+                newMap.put(new Coords(x, y), true);
             });
             map = newMap;
         }
@@ -67,7 +69,7 @@ public class Day13Part2 implements Solution {
 
         public String printToString() {
             StringBuilder sb = new StringBuilder();
-            map.print(b -> "#", " ", false, new Utils.Output() {
+            map.print(b -> "#", " ", false, new Output() {
                 @Override
                 public void print(String s) {
                     sb.append(s);
