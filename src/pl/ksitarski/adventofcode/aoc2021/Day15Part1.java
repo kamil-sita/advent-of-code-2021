@@ -7,22 +7,13 @@ import static pl.ksitarski.adventofcode.aoc2021.Utils.readFile;
 
 public class Day15Part1 implements Solution {
 
-    private static final boolean DEBUG = false;
-
     public static void main(String[] args) {
         System.out.println(new Day15Part1().solve(readFile("day15.txt")));
     }
 
     @Override
     public long solve(List<String> lines) {
-        Utils.Map2d<Integer> map2d = new Utils.Map2d<>();
-        int y = 0;
-        for (String line : lines) {
-            for (int x = 0; x < line.length(); x++) {
-                map2d.put(new Utils.Coords(x, y), Integer.parseInt(line.charAt(x)+ ""));
-            }
-            y++;
-        }
+        Utils.Map2d<Integer> map2d = Utils.Map2d.fromStrings(lines);
 
         PriorityQueue<PathPoint> priorityQueue = new PriorityQueue<>();
         Set<Utils.Coords> analyzed = new HashSet<>();

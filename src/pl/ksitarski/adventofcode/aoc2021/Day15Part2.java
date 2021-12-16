@@ -4,13 +4,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 import static pl.ksitarski.adventofcode.aoc2021.Utils.readFile;
 
 
 public class Day15Part2 implements Solution {
-
-    private static final boolean DEBUG = false;
 
     public static void main(String[] args) {
         System.out.println(new Day15Part2().solve(readFile("day15.txt")));
@@ -21,12 +20,14 @@ public class Day15Part2 implements Solution {
         int width = lines.get(0).length();
         int height = lines.size();
 
-        Utils.Map2d<Integer> map2d = new Utils.Map2d<>();
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                importMap(lines, map2d, i, j, width, height);
+        Utils.Map2d<Integer> map2d = Utils.Map2d.fromStrings(lines, (character, coords, applyFunc) -> {
+            for (int i = 0; i < 5; i++) {
+                for (int j = 0; j < 5; j++) {
+                    int v = character - '0';
+                    applyFunc.accept(coords.withDiff(i * width, j * height), (v + i + j - 1) % 9 + 1);
+                }
             }
-        }
+        });
 
         PriorityQueue<PathPoint> priorityQueue = new PriorityQueue<>();
         Set<Utils.Coords> analyzed = new HashSet<>();
@@ -35,7 +36,7 @@ public class Day15Part2 implements Solution {
         while (true) {
             PathPoint pathPoint = priorityQueue.poll();
 
-            if (pathPoint.coords.equals(new Utils.Coords(map2d.getHeight() - 1, map2d.getWidth() - 1))) {
+            if (pathPoint.coords.equals(map2d.bottomRightCoord())) {
                 return pathPoint.cost;
             }
 
@@ -69,10 +70,7 @@ public class Day15Part2 implements Solution {
             for (int x = 0; x < line.length(); x++) {
                 int actualX = width * i + x;
                 int actualY = height * j + y;
-                int v = (Integer.parseInt(line.charAt(x) + "") + i + j);
-                while (v > 9) {
-                    v -= 9;
-                }
+                int v = (Integer.parseInt(line.charAt(x) + "") + i + j - 1) % 9 + 1;
                 map2d.put(new Utils.Coords(actualX, actualY), v);
             }
             y++;

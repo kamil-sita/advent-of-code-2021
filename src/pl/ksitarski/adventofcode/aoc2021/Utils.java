@@ -5,9 +5,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -74,12 +75,39 @@ public class Utils {
             this.y = y;
         }
 
+        public static Coords of(int x, int y) {
+            return new Coords(x,  y);
+        }
+
         public Coords withXDiff(int diffX) {
             return new Coords(x + diffX, y);
         }
 
         public Coords withYDiff(int diffY) {
             return new Coords(x, y + diffY);
+        }
+
+        public Coords withDiff(int diffX, int diffY) {
+            return new Coords(x + diffX, y + diffY);
+        }
+
+        public List<Coords> around() {
+            return around(true);
+        }
+
+        public List<Coords> around(boolean includeDiagonals) {
+            List<Coords> coords = new ArrayList<>();
+            coords.add(withXDiff(1));
+            coords.add(withXDiff(-1));
+            coords.add(withYDiff(1));
+            coords.add(withYDiff(-1));
+            if (includeDiagonals) {
+                coords.add(withDiff(1, 1));
+                coords.add(withDiff(-1, 1));
+                coords.add(withDiff(1, -1));
+                coords.add(withDiff(-1, -1));
+            }
+            return coords;
         }
 
         public int getX() {
@@ -120,6 +148,35 @@ public class Utils {
         public Map2d() {
         }
 
+        public static Map2d<Integer> fromStrings(List<String> strings) {
+            Map2d<Integer> map2d = new Map2d<>();
+            for (int y = 0; y < strings.size(); y++) {
+                String s = strings.get(y);
+                for (int x = 0; x < s.length(); x++) {
+                    char c = s.charAt(x);
+                    map2d.put(Coords.of(x, y), c - '0');
+                }
+            }
+            return map2d;
+        }
+
+        public static Map2d<Integer> fromStrings(List<String> strings, MapImport<Character, Integer> mapImport) {
+            Map2d<Integer> map2d = new Map2d<>();
+            for (int y = 0; y < strings.size(); y++) {
+                String s = strings.get(y);
+                for (int x = 0; x < s.length(); x++) {
+                    char c = s.charAt(x);
+                    Coords coords = Coords.of(x, y);
+                    mapImport.transfer(c, coords, map2d::put);
+                }
+            }
+            return map2d;
+        }
+
+        public interface MapImport<T, U> {
+            void transfer(T t, Coords coords, BiConsumer<Coords, U> applyFunc);
+        }
+
         public Map2d(int width, int height) {
             this.width = width;
             this.height = height;
@@ -143,32 +200,19 @@ public class Utils {
             return map.get(coords);
         }
 
-        public List<T> getValuesAround(Coords coords) {
-            List<T> values = new ArrayList<>();
-            List<Coords> existingCoords = getPositionsAround(coords);
-            for (Coords existingCoord : existingCoords) {
-                values.add(get(existingCoord).get());
-            }
-            return values;
-        }
-
         public List<Coords> getPositionsAround(Coords coords) {
-            List<Coords> values = new ArrayList<>();
-            addCoordIfExists(new Coords(coords.getX() - 1, coords.getY()), values);
-            addCoordIfExists(new Coords(coords.getX() + 1, coords.getY()), values);
-            addCoordIfExists(new Coords(coords.getX(), coords.getY() - 1), values);
-            addCoordIfExists(new Coords(coords.getX(), coords.getY() + 1), values);
-            addCoordIfExists(new Coords(coords.getX() - 1, coords.getY() + 1), values);
-            addCoordIfExists(new Coords(coords.getX() + 1, coords.getY() - 1), values);
-            addCoordIfExists(new Coords(coords.getX() - 1, coords.getY() - 1), values);
-            addCoordIfExists(new Coords(coords.getX() + 1, coords.getY() + 1), values);
-            return values;
+            return getPositionsAround(coords, true);
         }
 
-        private void addCoordIfExists(Coords coords, List<Coords> values) {
-            if (get(coords).isPresent()) {
-                values.add(coords);
-            }
+        public List<Coords> getPositionsAround(Coords coords, boolean diagonals) {
+            return coords.around(diagonals)
+                    .stream()
+                    .filter(this::coordExists)
+                    .collect(Collectors.toList());
+        }
+
+        public boolean coordExists(Coords coords) {
+            return map.containsKey(coords);
         }
 
         public int getWidth() {
@@ -177,6 +221,10 @@ public class Utils {
 
         public int getHeight() {
             return height;
+        }
+
+        public Coords bottomRightCoord() {
+            return new Coords(width - 1, height - 1);
         }
 
         public void setWidth(int width) {
