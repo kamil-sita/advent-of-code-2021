@@ -3,6 +3,8 @@ package pl.ksitarski.adventofcode.aoc2021.utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class Coords {
     private final int x;

@@ -22,7 +22,7 @@ public class Day15Part1 implements Solution {
         Set<Coords> analyzed = new HashSet<>();
         priorityQueue.add(new PathPoint(0, new Coords(0, 0)));
 
-        while (true) {
+        while (!priorityQueue.isEmpty()) {
             PathPoint pathPoint = priorityQueue.poll();
 
             if (pathPoint.coords.equals(new Coords(map2d.getHeight() - 1, map2d.getWidth() - 1))) {
@@ -31,26 +31,16 @@ public class Day15Part1 implements Solution {
 
             int pathCost = pathPoint.cost;
 
-            Coords coordsDown = pathPoint.coords.withYDiff(1);
-            map2d.get(coordsDown).ifPresent(tileCost -> {
-                addIfNotYetAnalyzed(priorityQueue, analyzed, pathCost, coordsDown, tileCost);
-            });
-
-            Coords coordsRight = pathPoint.coords.withXDiff(1);
-            map2d.get(coordsRight).ifPresent(tileCost -> {
-                addIfNotYetAnalyzed(priorityQueue, analyzed, pathCost, coordsRight, tileCost);
-            });
-
-            Coords coordsLeft = pathPoint.coords.withXDiff(-1);
-            map2d.get(coordsLeft).ifPresent(tileCost -> {
-                addIfNotYetAnalyzed(priorityQueue, analyzed, pathCost, coordsLeft, tileCost);
-            });
-
-            Coords coordsUp = pathPoint.coords.withYDiff(-1);
-            map2d.get(coordsUp).ifPresent(tileCost -> {
-                addIfNotYetAnalyzed(priorityQueue, analyzed, pathCost, coordsUp, tileCost);
-            });
+           pathPoint.coords.around(false)
+                   .stream()
+                   .filter(map2d::coordExists)
+                   .forEach(
+                           coord -> {
+                               addIfNotYetAnalyzed(priorityQueue, analyzed, pathCost, coord, map2d.forceGet(coord));
+                           }
+                   );
         }
+        throw new RuntimeException();
     }
 
     private void addIfNotYetAnalyzed(PriorityQueue<PathPoint> priorityQueue, Set<Coords> analyzed, int pathCost, Coords thisCoords, Integer tileCost) {
@@ -60,15 +50,7 @@ public class Day15Part1 implements Solution {
         }
     }
 
-
-    private static class PathPoint implements Comparable<PathPoint> {
-        private final int cost;
-        private final Coords coords;
-
-        public PathPoint(int cost, Coords coords) {
-            this.cost = cost;
-            this.coords = coords;
-        }
+    private record PathPoint(int cost, Coords coords) implements Comparable<PathPoint> {
 
         @Override
         public int compareTo(PathPoint o) {

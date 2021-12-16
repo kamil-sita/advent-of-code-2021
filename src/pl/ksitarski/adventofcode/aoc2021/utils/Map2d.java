@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -39,15 +40,6 @@ public class Map2d<T> {
             }
         }
         return map2d;
-    }
-
-    public interface MapImport<T, U> {
-        void transfer(T t, Coords coords, BiConsumer<Coords, U> applyFunc);
-    }
-
-    public Map2d(int width, int height) {
-        this.width = width;
-        this.height = height;
     }
 
     public void put(Coords coords, T t) {
@@ -93,20 +85,6 @@ public class Map2d<T> {
 
     public Coords bottomRightCoord() {
         return new Coords(width - 1, height - 1);
-    }
-
-    public void setWidth(int width) {
-        if (this.width > width) {
-            throw new RuntimeException();
-        }
-        this.width = width;
-    }
-
-    public void setHeight(int height) {
-        if (this.height > height) {
-            throw new RuntimeException();
-        }
-        this.height = height;
     }
 
     public void iterator(Map2dIterator<T> iterator) {
@@ -173,5 +151,13 @@ public class Map2d<T> {
         if (separators) {
             output.println("===");
         }
+    }
+
+    public interface Map2dIterator<T> {
+        void doSth(Coords coords, T value, Consumer<T> modifyThis, Consumer<Map2dIterator<T>> aroundThis);
+    }
+
+    public interface MapImport<T, U> {
+        void transfer(T t, Coords coords, BiConsumer<Coords, U> applyFunc);
     }
 }

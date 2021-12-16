@@ -35,7 +35,7 @@ public class Day15Part2 implements Solution {
         Set<Coords> analyzed = new HashSet<>();
         priorityQueue.add(new PathPoint(0, new Coords(0, 0)));
 
-        while (true) {
+        while (!priorityQueue.isEmpty()) {
             PathPoint pathPoint = priorityQueue.poll();
 
             if (pathPoint.coords.equals(map2d.bottomRightCoord())) {
@@ -44,39 +44,16 @@ public class Day15Part2 implements Solution {
 
             int pathCost = pathPoint.cost;
 
-            Coords coordsDown = pathPoint.coords.withYDiff(1);
-            map2d.get(coordsDown).ifPresent(tileCost -> {
-                addIfNotYetAnalyzed(priorityQueue, analyzed, pathCost, coordsDown, tileCost);
-            });
-
-            Coords coordsRight = pathPoint.coords.withXDiff(1);
-            map2d.get(coordsRight).ifPresent(tileCost -> {
-                addIfNotYetAnalyzed(priorityQueue, analyzed, pathCost, coordsRight, tileCost);
-            });
-
-            Coords coordsLeft = pathPoint.coords.withXDiff(-1);
-            map2d.get(coordsLeft).ifPresent(tileCost -> {
-                addIfNotYetAnalyzed(priorityQueue, analyzed, pathCost, coordsLeft, tileCost);
-            });
-
-            Coords coordsUp = pathPoint.coords.withYDiff(-1);
-            map2d.get(coordsUp).ifPresent(tileCost -> {
-                addIfNotYetAnalyzed(priorityQueue, analyzed, pathCost, coordsUp, tileCost);
-            });
+            pathPoint.coords.around(false)
+                    .stream()
+                    .filter(map2d::coordExists)
+                    .forEach(
+                            coord -> {
+                                addIfNotYetAnalyzed(priorityQueue, analyzed, pathCost, coord, map2d.forceGet(coord));
+                            }
+                    );
         }
-    }
-
-    private void importMap(List<String> lines, Map2d<Integer> map2d, int i, int j, int width, int height) {
-        int y = 0;
-        for (String line : lines) {
-            for (int x = 0; x < line.length(); x++) {
-                int actualX = width * i + x;
-                int actualY = height * j + y;
-                int v = (Integer.parseInt(line.charAt(x) + "") + i + j - 1) % 9 + 1;
-                map2d.put(new Coords(actualX, actualY), v);
-            }
-            y++;
-        }
+        throw new RuntimeException();
     }
 
     private void addIfNotYetAnalyzed(PriorityQueue<PathPoint> priorityQueue, Set<Coords> analyzed, int pathCost, Coords thisCoords, Integer tileCost) {
@@ -87,14 +64,7 @@ public class Day15Part2 implements Solution {
     }
 
 
-    private static class PathPoint implements Comparable<PathPoint> {
-        private final int cost;
-        private final Coords coords;
-
-        public PathPoint(int cost, Coords coords) {
-            this.cost = cost;
-            this.coords = coords;
-        }
+    private record PathPoint(int cost, Coords coords) implements Comparable<PathPoint> {
 
         @Override
         public int compareTo(PathPoint o) {
